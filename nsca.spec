@@ -1,8 +1,8 @@
 %define name nsca
 %define version 2.7.2
 %define release 1
-%define nsusr nagios
-%define nsgrp nagios
+%define nsusr icinga
+%define nsgrp icinga
 %define nsport 5667
 # %define nsport 8086
 
@@ -14,7 +14,7 @@
 %define nnmmsg logger -t %{name}/rpm
 
 Summary: Host/service/network monitoring agent for Nagios
-URL: http://www.nagios.org
+URL: http://www.icinga.org
 Name: %{name}
 Version: %{version}
 Release: %{release}
@@ -22,7 +22,7 @@ License: GPL
 Group: Application/System
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-buildroot
-Requires: bash, nagios, libmcrypt, xinetd
+Requires: bash, icinga, libmcrypt, xinetd
 
 # uncomment this for RedHat Enterprise Linux 3:
 #PreReq: util-linux, sh-utils, shadow-utils, sed, fileutils, mktemp
@@ -70,14 +70,14 @@ This package provides the send_nsca utility running on the client.
 
 
 %pre
-# Create `nagios' user on the system if necessary
+# Create `icinga' user on the system if necessary
 if id %{nsusr} 
 then
 	: # user already exists
 else
-        grep nagios /etc/group &>/dev/null || /usr/sbin/groupadd -r nagios 
+        grep icinga /etc/group &>/dev/null || /usr/sbin/groupadd -r icinga 
 
-	/usr/sbin/useradd -r -d /var/log/nagios -s /bin/sh -c "%{nsusr}" -g %{nsgrp} %{nsusr} || \
+	/usr/sbin/useradd -r -d /var/log/icinga -s /bin/sh -c "%{nsusr}" -g %{nsgrp} %{nsusr} || \
 		%nnmmsg Unexpected error adding user "%{nsusr}". Aborting install process.
 fi
 
@@ -109,16 +109,16 @@ CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" \
 	--with-nsca-grp=%{nsgrp} \
 	--prefix=""        \
 	--bindir=%{_prefix}/bin \
- 	--sysconfdir=/etc/nagios \
-	--localstatedir=/var/spool/nagios \
+ 	--sysconfdir=/etc/icinga \
+	--localstatedir=/var/spool/icinga \
 
 
 make all
 
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
-install -b -D -m 0644 sample-config/nsca.cfg ${RPM_BUILD_ROOT}/etc/nagios/nsca.cfg
-install -b -D -m 0644 sample-config/send_nsca.cfg ${RPM_BUILD_ROOT}/etc/nagios/send_nsca.cfg
+install -b -D -m 0644 sample-config/nsca.cfg ${RPM_BUILD_ROOT}/etc/icinga/nsca.cfg
+install -b -D -m 0644 sample-config/send_nsca.cfg ${RPM_BUILD_ROOT}/etc/icinga/send_nsca.cfg
 install -b -D -m 0644 sample-config/nsca.xinetd ${RPM_BUILD_ROOT}/etc/xined.d/nsca
 install -b -D -m 0755 src/nsca ${RPM_BUILD_ROOT}/usr/sbin/nsca
 install -b -D -m 0755 src/send_nsca ${RPM_BUILD_ROOT}/usr/bin/send_nsca
@@ -131,9 +131,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(755,root,root)
 /etc/xined.d/nsca
 /usr/sbin/nsca
-%dir /etc/nagios
+%dir /etc/icinga
 %defattr(644,root,root)
-%config(noreplace) /etc/nagios/*.cfg
+%config(noreplace) /etc/icinga/*.cfg
 %defattr(755,%{nsusr},%{nsgrp})
 %doc Changelog LEGAL README SECURITY
 
@@ -141,7 +141,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(755,root,root)
 /usr/bin/send_nsca
 %defattr(644,root,root)
-%config(noreplace) /etc/nagios/send_nsca.cfg
+%config(noreplace) /etc/icinga/send_nsca.cfg
 %defattr(755,%{nsusr},%{nsgrp})
 %doc Changelog LEGAL README SECURITY
 

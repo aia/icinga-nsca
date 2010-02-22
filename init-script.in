@@ -9,7 +9,7 @@
 # description: nsca is a daemon for accepting service check results \
 #              from applications running on other hosts.
 # processname: nsca
-# config: /usr/local/nagios/etc/nsca.cfg
+# config: /usr/local/icinga/etc/nsca.cfg
 
 # Source function library
 if [ -f /etc/rc.d/init.d/functions ]; then

@@ -6,11 +6,11 @@ define([AC_CACHE_SAVE],)
 
 AC_INIT(src/nsca.c)
 AC_CONFIG_HEADER(include/config.h)
-AC_PREFIX_DEFAULT(/usr/local/nagios)
+AC_PREFIX_DEFAULT(/usr/local/icinga)
 
 PKG_NAME=nsca
 PKG_VERSION="2.7.2"
-PKG_HOME_URL="http://www.nagios.org/"
+PKG_HOME_URL="http://www.icinga.org/"
 PKG_REL_DATE="07-03-2007"
 
 dnl Figure out how to invoke "install" and what install options to use.
@@ -212,8 +212,8 @@ AC_ARG_WITH(log_facility,--with-log-facility=<facility> sets NSCA syslog facilit
 AC_SUBST(log_facility)
 AC_DEFINE_UNQUOTED(NSCA_LOG_FACILITY,["$log_facility"])
 
-AC_ARG_WITH(nsca_user,--with-nsca-user=<user> sets user name to run NSCA,nsca_user=$withval,nsca_user=nagios)
-AC_ARG_WITH(nsca_grp,--with-nsca-grp=<grp> sets group name to run NSCA,nsca_grp=$withval,nsca_grp=nagios)
+AC_ARG_WITH(nsca_user,--with-nsca-user=<user> sets user name to run NSCA,nsca_user=$withval,nsca_user=icinga)
+AC_ARG_WITH(nsca_grp,--with-nsca-grp=<grp> sets group name to run NSCA,nsca_grp=$withval,nsca_grp=icinga)
 AC_ARG_WITH(nsca_port,--with-nsca-port=<port> sets port number for NSCA to listen on,nsca_port=$withval,nsca_port=5667)
 AC_SUBST(nsca_user)
 AC_SUBST(nsca_grp)

@@ -2,11 +2,15 @@
 NSCA README
 ***********
 
+General
+-------
+This version of NSCA has been forked and modified for usage with Icinga.
+License and Copyright has been kept. 2010-02-22
 
 Purpose
 -------
 The purpose of this addon is to allow you to send service check
-results to a central monitoring server running Nagios in a secure
+results to a central monitoring server running Icinga in a secure
 manner.
 
 
@@ -16,7 +20,7 @@ Contents
 There are two pieces to this addon:
 
   1) nsca       - This program runs as a daemon on the central server
-                  that runs Nagios.  It listens for host and service
+                  that runs Icinga.  It listens for host and service
 	          check results from remote machines (sent using the
 		  send_nsca program described below).  Upon receiving
                   data from a remote client, the daemon will make a
@@ -26,12 +30,12 @@ There are two pieces to this addon:
                   file.  If the decrypted data looks okay (i.e. it was
                   originally encrypted by the send_ncsa program using
                   the same password), the daemon will make entries in
-                  the Nagios external command file telling Nagios
+                  the Icinga external command file telling Icinga
                   to process the host or service check result.  
 
 		  Notes: The nsca daemon must have sufficient rights
                   to open the Nagios command file for writing.  Also,
-		  Nagios will only process passive service check
+		  Icinga will only process passive service check
                   results that it finds in the external command file
                   if the service has been defined in the host config
                   file (i.e. hosts.cfg) and it is being monitored.
@@ -100,7 +104,7 @@ Security
 --------
 
 There are some security implications with allowing remote clients
-to provide service check results to Nagios.  Because of this, you
+to provide service check results to Icinga.  Because of this, you
 have the option of encrypting the packets that the NSCA client sends
 to the NSCA daemon.  Read the SECURITY file for more information on
 the security risks of running NSCA, along with an explanation of what
@@ -144,11 +148,11 @@ of TCP wrappers, you need to do the following things:
 
 
    - Replace <user> with the name of the user that nsca server should run as.
-	Example: nagios
+	Example: icinga
    - Replace <nscabin> with the path to the nsca binary on your system.
-	Example: /usr/local/nagios/nsca
+	Example: /usr/local/icinga/bin/nsca
    - Replace <nscacfg> with the path to the nsca config file on your system.
-	Example: /usr/local/nagios/nsca.cfg
+	Example: /usr/local/icinga/etc/nsca.cfg
 
 
    ***** XINETD *****
@@ -206,7 +210,7 @@ Questions?
 ----------
 
 If you have questions about this addon, or problems getting things
-working, send an email to one of the nagios mailing lists (see http://support.nagios.com).
+working, send an email to one of the Icinga mailing lists (see http://www.icinga.org/community).
 
 	-- Ethan Galstad
 

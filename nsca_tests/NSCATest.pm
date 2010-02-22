@@ -36,7 +36,7 @@ sub start {
 	close F;
 	$self->pid($pid);
 
-	open(F, "> var/nagios.cmd") or die "Cannot create var/nagios.cmd";
+	open(F, "> var/icinga.cmd") or die "Cannot create var/icinga.cmd";
 	close F;
 	return $pid;
 }
@@ -46,7 +46,7 @@ sub stop {
 	print "Stopping nsca: ".$self->pid.$/;
 	kill "TERM", $self->pid;
 	$self->pid(undef);
-	unlink "var/nagios.cmd", "var/nsca.dump";
+	unlink "var/icinga.cmd", "var/nsca.dump";
 	sleep 1;	# Let daemon die
 }
 
@@ -66,7 +66,7 @@ sub send_cmd {
 
 sub read_cmd {
 	my ($self, $file) = @_;
-	$file ||= "var/nagios.cmd";
+	$file ||= "var/icinga.cmd";
 	my $fh = IO::File->new($file) or die "Can't open $file";
 	$self->process_data($fh);
 }

@@ -3,12 +3,12 @@ NSCA Tests
 Originally contributed by Ton Voon/Altinity 01/26/2007.
 
 These tests are designed to make sure that the Nagios daemon can start up
-and accept messages by comparing the output in the dummy nagios.cmd file with
+and accept messages by comparing the output in the dummy icinga.cmd file with
 the sent data.
 
 There are 3 tests at the moment:
 
-    * basic - just sends a few passive checks and makes sure that the nagios.cmd file receives them
+    * basic - just sends a few passive checks and makes sure that the icinga.cmd file receives them
 
     * multiple - runs the same as basic, but several times to check the daemon can handle multiple requests
 
