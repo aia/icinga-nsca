@@ -218,7 +218,7 @@ AC_ARG_WITH(nsca_port,--with-nsca-port=<port> sets port number for NSCA to liste
 AC_SUBST(nsca_user)
 AC_SUBST(nsca_grp)
 AC_SUBST(nsca_port)
-AC_DEFINE_UNQUOTED(DEFAULT_SERVER_PORT,$nsca_port)
+AC_DEFINE_UNQUOTED(DEFAULT_SERVER_PORT,["$nsca_port"])
 
 AC_PATH_PROG(PERL,perl)
 AC_OUTPUT(Makefile subst src/Makefile)

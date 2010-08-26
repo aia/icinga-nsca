@@ -22,7 +22,7 @@
 
 time_t start_time,end_time;
 
-int server_port=DEFAULT_SERVER_PORT;
+char *server_port=DEFAULT_SERVER_PORT;
 char server_name[MAX_HOST_ADDRESS_LENGTH];
 char password[MAX_INPUT_BUFFER]="";
 char config_file[MAX_INPUT_BUFFER]="send_nsca.cfg";
@@ -99,7 +99,7 @@ int main(int argc, char **argv){
 		printf("\n");
 		printf("Options:\n");
 		printf(" <host_address> = The IP address of the host running the NSCA daemon\n");
-		printf(" [port]         = The port on which the daemon is running - default is %d\n",DEFAULT_SERVER_PORT);
+		printf(" [port]         = The port on which the daemon is running - default is %s\n",DEFAULT_SERVER_PORT);
 		printf(" [to_sec]       = Number of seconds before connection attempt times out.\n");
 		printf("                  (default timeout is %d seconds)\n",DEFAULT_SOCKET_TIMEOUT);
 		printf(" [delim]        = Delimiter to use when parsing input (defaults to a tab)\n");
@@ -151,7 +151,7 @@ int main(int argc, char **argv){
 
 	/* we couldn't connect */
 	if(result!=STATE_OK){
-		printf("Error: Could not connect to host %s on port %d\n",server_name,server_port);
+		printf("Error: Could not connect to host %s on port %s\n",server_name,server_port);
 		do_exit(STATE_CRITICAL);
 	        }
 
@@ -399,7 +399,7 @@ int process_arguments(int argc, char **argv){
 		/* port to connect to */
 		else if(!strcmp(argv[x-1],"-p")){
 			if(x<argc){
-				server_port=atoi(argv[x]);
+				server_port=strdup(argv[x]);
 				x++;
 			        }
 			else

@@ -23,8 +23,8 @@
 #include "../include/nsca.h"
 
 
-static int server_port=DEFAULT_SERVER_PORT;
-static char server_address[16]="0.0.0.0";
+char *server_port=DEFAULT_SERVER_PORT;
+char    *server_address=NULL;
 static int socket_timeout=DEFAULT_SOCKET_TIMEOUT;
 static int log_facility=LOG_DAEMON;
 
@@ -377,13 +377,9 @@ static int read_config_file(char *filename){
                         return ERROR;
                         }
 
-                if(!strcmp(varname,"server_port")){
-                        server_port=atoi(varvalue);
-                        if((server_port<1024 && (geteuid()!=0)) || server_port<0){
-                                syslog(LOG_ERR,"Invalid port number specified in config file '%s' - Line %d\n",filename,line);
-                                return ERROR;
-                                }
-                        }
+                if(!strcmp(varname,"server_port"))
+			server_port=strdup(varvalue);
+
 		else if(!strcmp(varname,"server_address")){
                         strncpy(server_address,varvalue,sizeof(server_address) - 1);
                         server_address[sizeof(server_address)-1]='\0';
@@ -771,40 +767,49 @@ static void wait_for_connections(void) {
         int sock=0;
         int flag=1;
 
-        /* create a socket for listening */
-        sock=socket(AF_INET,SOCK_STREAM,0);
+	int rval;
+	int success=0;
+	struct addrinfo addrinfo;
+	struct addrinfo *res, *r;
 
-        /* exit if we couldn't create the socket */
-        if(sock<0){
-                syslog(LOG_ERR,"Network server socket failure (%d: %s)",errno,strerror(errno));
-                do_exit(STATE_CRITICAL);
-                }
+	memset(&addrinfo, 0, sizeof(addrinfo));
+	addrinfo.ai_family=PF_UNSPEC;
+	addrinfo.ai_socktype=SOCK_STREAM;
+	addrinfo.ai_protocol=IPPROTO_TCP;
 
-        /* set the reuse address flag so we don't get errors when restarting */
-        flag=1;
-        if(setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,(char *)&flag,sizeof(flag))<0){
-                syslog(LOG_ERR,"Could not set reuse address option on socket!\n");
-                do_exit(STATE_CRITICAL);
-                }
-
-        myname.sin_family=AF_INET;
-        myname.sin_port=htons(server_port);
-        bzero(&myname.sin_zero,8);
-
-        /* what address should we bind to? */
-        if(!strlen(server_address))
-                myname.sin_addr.s_addr=INADDR_ANY;
-        else if(!my_inet_aton(server_address,&myname.sin_addr)){
-                syslog(LOG_ERR,"Server address is not a valid IP address\n");
-                do_exit(STATE_CRITICAL);
-                }
-
-
-        /* bind the address to the Internet socket */
-        if(bind(sock,(struct sockaddr *)&myname,sizeof(myname))<0){
-                syslog(LOG_ERR,"Network server bind failure (%d: %s)\n",errno,strerror(errno));
-                do_exit(STATE_CRITICAL);
-                }
+	if(!server_address || !strlen(server_address)) {
+		server_address = NULL;
+		addrinfo.ai_flags=AI_PASSIVE;
+		}
+	if (rval = getaddrinfo(server_address, server_port, &addrinfo, &res) != 0) {
+		syslog(LOG_ERR,"Invalid server_address (%d: %s)",errno,strerror(errno));
+		do_exit(STATE_CRITICAL);
+		}
+	else {
+		for (r=res; r; r = r->ai_next) {   
+			sock = socket(r->ai_family, r->ai_socktype, r->ai_protocol);
+			/* socket should be non-blocking */
+			fcntl(sock,F_SETFL,O_NONBLOCK);
+			/* set the reuse address flag so we don't get errors when restarting */
+			flag=1;
+			if(setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,(char *)&flag,sizeof(flag))<0){
+				syslog(LOG_ERR,"Could not set reuse address option on socket!\n");
+				do_exit(STATE_UNKNOWN);
+				}
+			if(bind(sock, r->ai_addr, r->ai_addrlen) < 0) {
+				syslog(LOG_ERR,"Network server bind failure (%d: %s)\n",errno,strerror(errno));
+				(void) close(sock);
+				}
+			else {
+				success=1;
+				break;
+				}
+			}
+		freeaddrinfo(res);
+		if(success == 0) {
+			do_exit(STATE_CRITICAL);
+			}
+		}
 
         /* open the socket for listening */
         if(listen(sock,SOMAXCONN)<0){

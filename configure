@@ -6916,7 +6916,7 @@ fi
 
 
 cat >>confdefs.h <<_ACEOF
-#define DEFAULT_SERVER_PORT $nsca_port
+#define DEFAULT_SERVER_PORT "$nsca_port"
 _ACEOF
 
 

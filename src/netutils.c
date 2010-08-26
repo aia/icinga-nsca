@@ -35,176 +35,55 @@
 
 
 /* opens a connection to a remote host/tcp port */
-int my_tcp_connect(char *host_name,int port,int *sd){
+int my_tcp_connect(char *host_name,char *port,int *sd6){
 	int result;
+	int rval;
+	int success=0;
+	struct addrinfo addrinfo;
+	struct addrinfo *res, *r;
 
-	result=my_connect(host_name,port,sd,"tcp");
-
-	return result;
-        }
-
-
-/* opens a tcp or udp connection to a remote host */
-int my_connect(char *host_name,int port,int *sd,char *proto){
-	struct sockaddr_in servaddr;
-	struct hostent *hp;
-	struct protoent *ptrp;
-	int result;
-
-	bzero((char *)&servaddr,sizeof(servaddr));
-	servaddr.sin_family=AF_INET;
-	servaddr.sin_port=htons(port);
-
-	/* try to bypass using a DNS lookup if this is just an IP address */
-	if(!my_inet_aton(host_name,&servaddr.sin_addr)){
-
-		/* else do a DNS lookup */
-		hp=gethostbyname((const char *)host_name);
-		if(hp==NULL){
-			printf("Invalid host name '%s'\n",host_name);
-			return STATE_UNKNOWN;
-		        }
-
-		memcpy(&servaddr.sin_addr,hp->h_addr,hp->h_length);
-	        }
-
-	/* map transport protocol name to protocol number */
-	if(((ptrp=getprotobyname(proto)))==NULL){
-		printf("Cannot map \"%s\" to protocol number\n",proto);
+	memset(&addrinfo, 0, sizeof(addrinfo));
+	addrinfo.ai_family=PF_UNSPEC;
+	addrinfo.ai_socktype=SOCK_STREAM;
+	addrinfo.ai_protocol=IPPROTO_TCP;
+	if (rval = getaddrinfo(host_name, port, &addrinfo, &res) != 0) {
+		printf("Invalid host name '%s'\n",host_name);
 		return STATE_UNKNOWN;
-	        }
+		}
 
-	/* create a socket */
-	*sd=socket(PF_INET,(!strcmp(proto,"udp"))?SOCK_DGRAM:SOCK_STREAM,ptrp->p_proto);
-	if(*sd<0){
+	for (r=res; r; r = r->ai_next) {   
+		*sd6 = socket(r->ai_family, r->ai_socktype, r->ai_protocol);
+		result=connect(*sd6, r->ai_addr, r->ai_addrlen);
+
+		if(result<0){    
+			switch(errno){  
+				case ECONNREFUSED:
+					printf("Connection refused by host\n");
+					break;
+				case ETIMEDOUT:
+					printf("Timeout while attempting connection\n");
+					break;
+				case ENETUNREACH:
+					printf("Network is unreachable\n");
+					break;
+				default:
+					printf("Connection refused or timed out\n");
+				}
+			(void) close(*sd6);            
+			}
+		else {
+			success++;
+			break;
+			}
+		}
+	if (success == 0) {
 		printf("Socket creation failed\n");
-		return STATE_UNKNOWN;
-	        }
-
-	/* open a connection */
-	result=connect(*sd,(struct sockaddr *)&servaddr,sizeof(servaddr));
-	if(result<0){
-		switch(errno){  
-		case ECONNREFUSED:
-			printf("Connection refused by host\n");
-			break;
-		case ETIMEDOUT:
-			printf("Timeout while attempting connection\n");
-			break;
-		case ENETUNREACH:
-			printf("Network is unreachable\n");
-			break;
-		default:
-			printf("Connection refused or timed out\n");
-		        }
-
+		freeaddrinfo(res);
 		return STATE_CRITICAL;
-	        }
-
+		}
+	freeaddrinfo(res);
 	return STATE_OK;
-        }
-
-
-
-/* This code was taken from Fyodor's nmap utility, which was originally taken from
-   the GLIBC 2.0.6 libraries because Solaris doesn't contain the inet_aton() funtion. */
-int my_inet_aton(register const char *cp, struct in_addr *addr){
-	register unsigned int val;	/* changed from u_long --david */
-	register int base, n;
-	register char c;
-	u_int parts[4];
-	register u_int *pp = parts;
-
-	c=*cp;
-
-	for(;;){
-
-		/*
-		 * Collect number up to ``.''.
-		 * Values are specified as for C:
-		 * 0x=hex, 0=octal, isdigit=decimal.
-		 */
-		if (!isdigit((int)c))
-			return (0);
-		val=0;
-		base=10;
-
-		if(c=='0'){
-			c=*++cp;
-			if(c=='x'||c=='X')
-				base=16,c=*++cp;
-			else
-				base=8;
-		        }
-
-		for(;;){
-			if(isascii((int)c) && isdigit((int)c)){
-				val=(val*base)+(c -'0');
-				c=*++cp;
-			        } 
-			else if(base==16 && isascii((int)c) && isxdigit((int)c)){
-				val=(val<<4) | (c+10-(islower((int)c)?'a':'A'));
-				c = *++cp;
-			        } 
-			else
-				break;
-		        }
-
-		if(c=='.'){
-
-			/*
-			 * Internet format:
-			 *	a.b.c.d
-			 *	a.b.c	(with c treated as 16 bits)
-			 *	a.b	(with b treated as 24 bits)
-			 */
-			if(pp>=parts+3)
-				return (0);
-			*pp++=val;
-			c=*++cp;
-		        } 
-		else
-			break;
-	        }
-
-	/* Check for trailing characters */
-	if(c!='\0' && (!isascii((int)c) || !isspace((int)c)))
-		return (0);
-
-	/* Concoct the address according to the number of parts specified */
-	n=pp-parts+1;
-	switch(n){
-
-	case 0:
-		return (0);		/* initial nondigit */
-
-	case 1:				/* a -- 32 bits */
-		break;
-
-	case 2:				/* a.b -- 8.24 bits */
-		if(val>0xffffff)
-			return (0);
-		val|=parts[0]<<24;
-		break;
-
-	case 3:				/* a.b.c -- 8.8.16 bits */
-		if(val>0xffff)
-			return (0);
-		val|=(parts[0]<< 24) | (parts[1]<<16);
-		break;
-
-	case 4:				/* a.b.c.d -- 8.8.8.8 bits */
-		if(val>0xff)
-			return (0);
-		val|=(parts[0]<<24) | (parts[1]<<16) | (parts[2]<<8);
-		break;
-	        }
-
-	if(addr)
-		addr->s_addr=htonl(val);
-
-	return (1);
-        }
+	}
 
 
 
