@@ -1,1 +1,6 @@
 autom4te.cache
+Makefile
+config.log
+config.status
+init-script
+subst
