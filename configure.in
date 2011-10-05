@@ -9,9 +9,9 @@ AC_CONFIG_HEADER(include/config.h)
 AC_PREFIX_DEFAULT(/usr/local/icinga)
 
 PKG_NAME=nsca
-PKG_VERSION="2.7.2"
+PKG_VERSION="3.0-dev"
 PKG_HOME_URL="http://www.icinga.org/"
-PKG_REL_DATE="07-03-2007"
+PKG_REL_DATE="10-05-2011"
 
 dnl Figure out how to invoke "install" and what install options to use.
 AC_PROG_INSTALL

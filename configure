@@ -1697,9 +1697,9 @@ ac_config_headers="$ac_config_headers include/config.h"
 
 
 PKG_NAME=nsca
-PKG_VERSION="2.7.2"
+PKG_VERSION="3.0-dev"
 PKG_HOME_URL="http://www.icinga.org/"
-PKG_REL_DATE="07-03-2007"
+PKG_REL_DATE="10-05-2011"
 
 ac_aux_dir=
 for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
