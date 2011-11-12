@@ -8,7 +8,7 @@ ENHANCEMENTS
 - add IPv6 support
 
 FIXES
-
+* correct indent and add scripts like in icinga-core
 
 2.8 - ??/??/????
 ----------------
