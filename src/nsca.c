@@ -381,8 +381,7 @@ static int read_config_file(char *filename){
 			server_port=strdup(varvalue);
 
 		else if(!strcmp(varname,"server_address")){
-                        strncpy(server_address,varvalue,sizeof(server_address) - 1);
-                        server_address[sizeof(server_address)-1]='\0';
+			server_address=strdup(varvalue);
                         }
 		else if(strstr(input_buffer,"command_file")){
                         if(strlen(varvalue)>sizeof(command_file)-1){
