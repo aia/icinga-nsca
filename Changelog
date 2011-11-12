@@ -1,22 +1,25 @@
-**************
-NSCA Changelog
-**************
+*********************
+Icinga NSCA Changelog
+*********************
 
-XXX - XX/XX/XXXX
+3.0.0 - ??/??/2012
 
 ENHANCEMENTS
 - add IPv6 support
 
 FIXES
+* Added --with-log-facility option to control syslog logging (Ryan Ordway and Brian Seklecki)
+* Fixed bug where daemon would segfault if mcrypt library was not initialized before timeout (Holger Weiss)
+* Fixed bug with switching from dump file to command file when running under single mode (Ton Voon)
+* Fix for small memory leak with running as a single process daemon (Daniel)
 * correct indent and add scripts like in icinga-core
 
-2.8 - ??/??/????
-----------------
-- Added --with-log-facility option to control syslog logging (Ryan Ordway and Brian Seklecki)
-- Fixed bug where daemon would segfault if mcrypt library was not initialized before timeout (Holger Weiss)
-- Fixed bug with switching from dump file to command file when running under single mode (Ton Voon)
-- Fix for small memory leak with running as a single process daemon (Daniel)
+CHANGES
 
+
+***********************
+Archived NSCA Changelog
+***********************
 
 2.7.2 - 07/03/2007
 ------------------
