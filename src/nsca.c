@@ -44,6 +44,7 @@ char    *nsca_user=NULL;
 char    *nsca_group=NULL;
 
 char    *nsca_chroot=NULL;
+char    *check_result_path=NULL;
 
 char    *pid_file=NULL;
 int     wrote_pid_file=FALSE;
@@ -460,6 +461,26 @@ static int read_config_file(char *filename){
                         else 
                                 aggregate_writes=FALSE;
                         }
+                    else if(strstr(input_buffer,"check_result_path")){
+                            if(strlen(varvalue)>MAX_INPUT_BUFFER-1){
+                                    syslog(LOG_ERR,"Check result path is too long in config file '%s' - Line %d\n",filename,line);
+                                    return ERROR;
+                                    }
+                            check_result_path=strdup(varvalue);
+                            int checkresult_test_fd=-1;
+                            char *checkresult_test=NULL;
+                            asprintf(&checkresult_test,"%s/nsca.test.%i",check_result_path,getpid());
+                            checkresult_test_fd=open(checkresult_test,O_WRONLY|O_CREAT);
+				/* FIXME free checkresult_test and close file descriptor */
+
+                            if (checkresult_test_fd>0){
+                                    unlink(checkresult_test);
+                                    }
+                            else {
+                                    syslog(LOG_ERR,"check_result_path config variable found, but directory not writeable.\n");
+                                    return ERROR;
+                                    }
+                            }
 		else if(strstr(input_buffer,"append_to_file")){
                         if(atoi(varvalue)>0)
                                 append_to_file=TRUE;

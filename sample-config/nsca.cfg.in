@@ -13,6 +13,14 @@ log_facility=@log_facility@
 
 
 
+# CHECK RESULT PATH
+# If passed, skip command pipe and submit directly into the checkresult
+# directory. For best results, use a ramdisk.
+
+#check_result_path=@CHECKRESULTDIR@
+
+
+
 # PID FILE
 # The name of the file in which the NSCA daemon should write it's process ID
 # number.  The file is only written if the NSCA daemon is started by the root

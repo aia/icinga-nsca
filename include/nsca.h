@@ -44,6 +44,7 @@ int get_log_facility(char *);
 static int open_command_file(void);
 static void close_command_file(void);
 static int write_check_result(char *,char *,int,char *,time_t);
+static int write_checkresult_file(char *,char *,int,char *,time_t);
 
 static int get_user_info(const char *,uid_t *);
 static int get_group_info(const char *,gid_t *);

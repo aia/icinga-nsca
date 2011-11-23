@@ -609,6 +609,7 @@ TARGET_VER
 nsca_port
 nsca_grp
 nsca_user
+CHECKRESULTDIR
 log_facility
 LIBMCRYPT_LIBS
 LIBMCRYPT_CFLAGS
@@ -687,6 +688,7 @@ with_mcrypt_lib
 with_mcrypt_inc
 with_libmcrypt_prefix
 with_log_facility
+with_checkresult_dir
 with_nsca_user
 with_nsca_grp
 with_nsca_port
@@ -1316,6 +1318,8 @@ Optional Packages:
 --with-mcrypt-inc=DIR sets location of the mcrypt client include files
   --with-libmcrypt-prefix=PFX   Prefix where libmcrypt is installed (optional)
 --with-log-facility=<facility> sets NSCA syslog facility
+  --with-checkresult-dir=<path>
+                          sets path to check results spool directory
 --with-nsca-user=<user> sets user name to run NSCA
 --with-nsca-grp=<grp> sets group name to run NSCA
 --with-nsca-port=<port> sets port number for NSCA to listen on
@@ -4956,6 +4960,21 @@ fi
 cat >>confdefs.h <<_ACEOF
 #define NSCA_LOG_FACILITY "$log_facility"
 _ACEOF
+
+
+CHECKRESULTDIR=no
+
+# Check whether --with-checkresult-dir was given.
+if test "${with_checkresult_dir+set}" = set; then :
+  withval=$with_checkresult_dir; CHECKRESULTDIR=$withval
+else
+  CHECKRESULTDIR=no
+fi
+
+if test x$CHECKRESULTDIR = xno; then
+        CHECKRESULTDIR="$localstatedir/spool/checkresults"
+fi
+
 
 
 
