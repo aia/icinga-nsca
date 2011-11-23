@@ -1,4 +1,4 @@
-%define name nsca
+%define name icinga-nsca
 %define version 3.0-dev
 %define release 1
 %define nsusr icinga
@@ -23,6 +23,8 @@ Group: Application/System
 Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-buildroot
 Requires: bash, icinga, libmcrypt, xinetd
+# make sure we don't interfere with nagios nsca
+Conflicts: nsca
 
 # uncomment this for RedHat Enterprise Linux 3:
 #PreReq: util-linux, sh-utils, shadow-utils, sed, fileutils, mktemp
@@ -49,6 +51,8 @@ This package provides the core agent running on the Nagios server
 Requires: libmcrypt
 Group: Application/System
 Summary: Provides the send_nsca utility running on the Nagios-Client.
+# make sure we don't interfere with nagios nsca
+Conflicts: nsca
 
 %description send
 This program is designed to accept passive service check results from 

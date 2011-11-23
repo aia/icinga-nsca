@@ -8,10 +8,15 @@ AC_INIT(src/nsca.c)
 AC_CONFIG_HEADER(include/config.h)
 AC_PREFIX_DEFAULT(/usr/local/icinga)
 
-PKG_NAME=nsca
+PKG_NAME=icinga-nsca
 PKG_VERSION="3.0-dev"
 PKG_HOME_URL="http://www.icinga.org/"
 PKG_REL_DATE="10-05-2011"
+AC_SUBST(PKG_NAME)
+AC_SUBST(PKG_VERSION)
+AC_SUBST(PKG_HOME_URL)
+AC_SUBST(PKG_REL_DATE)
+
 
 dnl Figure out how to invoke "install" and what install options to use.
 AC_PROG_INSTALL
@@ -219,6 +224,27 @@ AC_SUBST(nsca_user)
 AC_SUBST(nsca_grp)
 AC_SUBST(nsca_port)
 AC_DEFINE_UNQUOTED(DEFAULT_SERVER_PORT,["$nsca_port"])
+
+dnl Determine target OS, version and architecture for package build macros
+if test "x$target_ver" = "x" ; then
+        TARGET_VER=`uname -r`
+else
+        TARGET_VER=$target_ver
+fi
+AC_SUBST(TARGET_VER)
+if test "x$target_os" = "x" ; then
+        TARGET_OS=`uname -s`
+else
+        TARGET_OS=$target_os
+fi
+AC_SUBST(TARGET_OS)
+if test "x$target_cpu" = "x" ; then
+        TARGET_ARCH=`uname -p`
+else
+        TARGET_ARCH=$target_cpu
+fi
+AC_SUBST(TARGET_ARCH)
+
 
 AC_PATH_PROG(PERL,perl)
 AC_OUTPUT(Makefile subst src/Makefile)
