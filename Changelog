@@ -1,13 +1,28 @@
-**************
-NSCA Changelog
-**************
+*********************
+Icinga NSCA Changelog
+*********************
 
 XXX - XX/XX/XXXX
 
 ENHANCEMENTS
-- add IPv6 support
+* add IPv6 support
+* add config directive to submit directly to checkresults directory (Mike Lindsey) #2100
+	** --with-checkresult-dir=<path> for configure
+* Support multi-line check output with 4000 character limit (Mike Lindsey) #2101
 
 FIXES
+
+CHANGES
+
+* nsca.cfg
+	** check_result_path
+* configure
+	** --with-checkresult-dir=<path>
+
+
+***********************
+Archived NRPE Changelog
+***********************
 
 
 2.8 - ??/??/????
