@@ -8,9 +8,10 @@ ENHANCEMENTS
 * add IPv6 support
 * add config directive to submit directly to checkresults directory (Mike Lindsey) #2100
 	** --with-checkresult-dir=<path> for configure
-* Support multi-line check output with 4000 character limit (Mike Lindsey) #2101
+* Support multi-line check output with 4000 character limit (Mike Lindsey) #2100
 
 FIXES
+* allow packets arriving with a future time stamp (Daniel Wittenberg) #2101
 
 CHANGES
 
