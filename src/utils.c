@@ -2,10 +2,11 @@
  *
  * UTILS.C - Utility functions for NSCA
  *
- * License: GPL
  * Copyright (c) 2000-2008 Ethan Galstad (nagios@nagios.org)
+ * Copyright (c) 2010-2012 Icinga Development Team and Community Contributors
+ *      (http://www.icinga.org)
  *
- * Last Modified: 01-15-2008
+ * License: GPL
  *
  * Description:
  *
@@ -40,7 +41,7 @@ static unsigned long crc32_table[256];
 static volatile sig_atomic_t mcrypt_initialized = FALSE;
 #endif
 
-/* escapes newlines in a string, snagged from nagios-3.0.6/base/utils.c */
+/* escapes newlines in a string */
 char *escape_newlines(char *rawbuf) {
 	char *newbuf = NULL;
 	register int x, y;

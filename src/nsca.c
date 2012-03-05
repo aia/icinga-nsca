@@ -1,17 +1,18 @@
 /*******************************************************************************
  *
- * NSCA.C - Nagios Service Check Acceptor
- * Copyright (c) 2009 Nagios Core Development Team and Community Contributors
+ * NSCA.C - Nagios Service Check Acceptor for Icinga
  * Copyright (c) 2000-2009 Ethan Galstad (egalstad@nagios.org)
- * License: GPL v2
+ * Copyright (c) 2009-2012 Nagios Core Development Team and Community Contributors
+ * Copyright (c) 2010-2012 Icinga Development Team and Community Contributors
+ *      (http://www.icinga.org)
  *
- * Last Modified: 10-05-2011
+ * License: GPL v2
  *
  * Command line: NSCA -c <config_file> [mode]
  *
  * Description:
  *
- * This program is designed to run as a daemon on the main Nagios machine
+ * This program is designed to run as a daemon on the main Icinga machine
  * and accept service check results from remote hosts.
  *
  ******************************************************************************/
@@ -91,8 +92,9 @@ int main(int argc, char **argv) {
 		if (result != OK)
 			printf("Incorrect command line arguments supplied\n");
 		printf("\n");
-		printf("NSCA - Nagios Service Check Acceptor\n");
-		printf("Copyright (c) 2009 Nagios Core Development Team and Community Contributors\n");
+		printf("NSCA - Nagios Service Check Acceptor for Icinga\n");
+		printf("Copyright (c) 2010-2012 Icinga Development Team and Community Contributors (http://www.icinga.org)\n");
+		printf("Copyright (c) 2009-2012 Nagios Core Development Team and Community Contributors\n");
 		printf("Copyright (c) 2000-2009 Ethan Galstad\n");
 		printf("Version: %s\n", PROGRAM_VERSION);
 		printf("Last Modified: %s\n", MODIFICATION_DATE);
@@ -1197,7 +1199,7 @@ static void handle_connection_read(int sock, void *data) {
 	return;
 }
 
-/* writes service / host check results to the Nagios checkresult directory */
+/* writes service / host check results to the Icinga checkresult directory */
 static int write_checkresult_file(char *host_name, char *svc_description, int return_code, char *plugin_output, time_t check_time) {
 	mode_t new_umask = 077;
 	mode_t old_umask;
@@ -1264,11 +1266,11 @@ static int write_checkresult_file(char *host_name, char *svc_description, int re
 
 
 
-/* writes service/host check results to the Nagios command file */
+/* writes service/host check results to the Icinga command file */
 static int write_check_result(char *host_name, char *svc_description, int return_code, char *plugin_output, time_t check_time) {
 
 	if (debug == TRUE)
-		syslog(LOG_ERR, "Attempting to write to nagios command pipe");
+		syslog(LOG_ERR, "Attempting to write to icinga command pipe");
 
 	if (aggregate_writes == FALSE) {
 		if (open_command_file() == ERROR)

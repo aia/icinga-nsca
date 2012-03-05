@@ -2,7 +2,8 @@
  *
  * NSCA.H - NSCA Include File
  * Copyright (c) 1999-2009 Ethan Galstad (nagios@nagios.org)
- * Last Modified: 07-07-2009
+ * Copyright (c) 2010-2012 Icinga Development Team and Community Contributors
+ *      (http://www.icinga.org)
  *
  * License:
  *

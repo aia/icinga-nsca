@@ -2,10 +2,11 @@
  *
  * NETUTILS.C - NSCA Network Utilities
  *
- * License: GPL
  * Copyright (c) 1999-2006 Ethan Galstad (nagios@nagios.org)
+ * Copyright (c) 2010-2012 Icinga Development Team and Community Contributors
+ *      (http://www.icinga.org)
  *
- * Last Modified: 01-21-2006
+ * License: GPL
  *
  * Description:
  *

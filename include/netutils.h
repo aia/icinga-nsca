@@ -2,10 +2,11 @@
  *
  * NETUTILS.H - NSCA Network Utilities Include File
  *
- * License: GPL
  * Copyright (c) 1999-2003 Ethan Galstad (nagios@nagios.org)
+ * Copyright (c) 2010-2012 Icinga Development Team and Community Contributors
+ *      (http://www.icinga.org)
  *
- * Last Modified: 10-15-2003
+ * License: GPL
  *
  * Description:
  *
@@ -35,8 +36,3 @@ int my_tcp_connect(char *,char *,int *);
 
 int sendall(int,char *,int *);
 int recvall(int,char *,int *,int);
-
-
-
-
-

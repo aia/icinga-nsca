@@ -2,7 +2,8 @@
  *
  * COMMON.H - NSCA Common Include File
  * Copyright (c) 1999-2003 Ethan Galstad (nagios@nagios.org)
- * Last Modified: 01-07-2003
+ * Copyright (c) 2010-2012 Icinga Development Team and Community Contributors
+ *      (http://www.icinga.org)
  *
  * License:
  *
