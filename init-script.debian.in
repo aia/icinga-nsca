@@ -1,0 +1,32 @@
+#!/bin/sh
+# Start/stop the nsca daemon.
+
+NscaBin=@bindir@/nsca
+NscaCfg=@sysconfdir@/nsca.cfg
+
+test -f $NscaBin || exit 0
+
+case "$1" in
+start)  echo -n "Starting icinga remote plugin daemon: nsca"
+        start-stop-daemon --start --quiet --exec $NscaBin -- -c $NscaCfg -d
+        echo "."
+        ;;
+stop)   echo -n "Stopping icinga remote plugin daemon: nsca"
+        start-stop-daemon --stop --quiet --exec $NscaBin
+        echo "."
+        ;;
+restart) echo -n "Restarting icinga remote plugin daemon: nsca"
+        start-stop-daemon --stop --quiet --exec $NscaBin
+        start-stop-daemon --start --quiet --exec $NscaBin -- -c $NscaCfg -d
+        echo "."
+        ;;
+reload|force-reload) echo -n "Reloading configuration files for icinga remote plugin daemon: nsca"
+        # nsca reloads automatically
+        echo "."
+        ;;
+*)      echo "Usage: /etc/init.d/nsca start|stop|restart|reload|force-reload"
+        exit 1
+        ;;
+esac
+exit 0
+

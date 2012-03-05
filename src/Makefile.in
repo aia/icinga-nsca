@@ -14,6 +14,16 @@ LIBWRAPLIBS=@LIBWRAPLIBS@
 
 CP=@CP@
 
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+CFGDIR=@sysconfdir@
+BINDIR=@bindir@
+SBINDIR=@sbindir@
+LIBEXECDIR=@libexecdir@
+INSTALL=@INSTALL@
+NAGIOS_INSTALL_OPTS=@NAGIOS_INSTALL_OPTS@
+NSCA_INSTALL_OPTS=@NSCA_INSTALL_OPTS@
+
 
 all: nsca send_nsca
 
@@ -22,6 +32,18 @@ nsca: nsca.c netutils.c utils.c $(SRC_INCLUDE)/netutils.h $(SRC_INCLUDE)/utils.h
 
 send_nsca: send_nsca.c netutils.c utils.c $(SRC_INCLUDE)/netutils.h $(SRC_INCLUDE)/utils.h $(SRC_INCLUDE)/common.h $(SRC_INCLUDE)/config.h
 	$(CC) $(CFLAGS) -o $@ send_nsca.c netutils.c utils.c $(LDFLAGS) $(SOCKETLIBS)
+
+install:
+	$(MAKE) install-client
+	$(MAKE) install-daemon
+
+install-client:
+	$(INSTALL) -m 775 $(NAGIOS_INSTALL_OPTS) -d $(DESTDIR)$(LIBEXECDIR)
+	$(INSTALL) -m 775 $(NAGIOS_INSTALL_OPTS) send_nsca $(DESTDIR)$(LIBEXECDIR)
+
+install-daemon:
+	$(INSTALL) -m 775 $(NAGIOS_INSTALL_OPTS) -d $(DESTDIR)$(BINDIR)
+	$(INSTALL) -m 775 $(NSCA_INSTALL_OPTS) nsca $(DESTDIR)$(BINDIR)
 
 clean:
 	rm -f core nsca send_nsca

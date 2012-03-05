@@ -10,16 +10,26 @@ ENHANCEMENTS
 	** --with-checkresult-dir=<path> for configure
 * Support multi-line check output with 4000 character limit (Mike Lindsey) #2100
 * allow older clients using smaller packet size to talk to newer servers #2288
+* add make install and variants, extend configure, rework init script #2111
 
 FIXES
 * allow packets arriving with a future time stamp (Daniel Wittenberg) #2101
 
 CHANGES
 
-* nsca.cfg
-	** check_result_path
-* configure
+* add new configure options
 	** --with-checkresult-dir=<path>
+	** --with-init-dir
+	** --with-pid-file
+* add new make targets
+	** install-daemon
+	** install-client
+	** install-init
+	** fullinstall
+	** install-daemon-config
+	** install-client-config
+* add new nsca.cfg options
+	** check_result_path
 
 
 ***********************
