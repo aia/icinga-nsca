@@ -7,6 +7,8 @@ General
 This version of NSCA has been forked and modified for usage with Icinga.
 License and Copyright has been kept. 2010-02-22
 
+For docs please refer to http://docs.icinga.org
+
 Purpose
 -------
 The purpose of this addon is to allow you to send service check
@@ -19,58 +21,53 @@ Contents
 
 There are two pieces to this addon:
 
-  1) nsca       - This program runs as a daemon on the central server
-                  that runs Icinga.  It listens for host and service
-	          check results from remote machines (sent using the
-		  send_nsca program described below).  Upon receiving
-                  data from a remote client, the daemon will make a
-                  *very* basic attempt at validating the data it has
-                  received from the client.  This is done by decrypting
-                  the data with the password stored in the nsca.cfg 
-                  file.  If the decrypted data looks okay (i.e. it was
-                  originally encrypted by the send_ncsa program using
-                  the same password), the daemon will make entries in
-                  the Icinga external command file telling Icinga
-                  to process the host or service check result.  
+  1) nsca
 
-		  Notes: The nsca daemon must have sufficient rights
-                  to open the Nagios command file for writing.  Also,
-		  Icinga will only process passive service check
-                  results that it finds in the external command file
-                  if the service has been defined in the host config
-                  file (i.e. hosts.cfg) and it is being monitored.
+	This program runs as a daemon on the central server that runs Icinga.
+	It listens for host and service check results from remote machines
+	(sent using the send_nsca program described below).  Upon receiving
+	data from a remote client, the daemon will make a *very* basic attempt
+	at validating the data it has received from the client.  This is done
+	by decrypting the data with the password stored in the nsca.cfg file.
+	If the decrypted data looks okay (i.e. it was originally encrypted by
+	the send_ncsa program using the same password), the daemon will make
+	entries in the Icinga external command file telling Icinga to process
+	the host or service check result.
+
+	Notes: The nsca daemon must have sufficient rights to open the Icinga
+	command file for writing.  Furthermore, Icinga will only process passive
+	service check results that it finds in the external command file if the
+	service has been defined in the host config file (i.e. hosts.cfg) and
+	it is being monitored.
+	Newer versions of this software will allow you to enable writing to the
+	checkresult spool directory instead of the command pipe.
 
 
-  2) send_nsca  - This is the client program that is used to send
-		  service check information from a remote machine to
-                  the nsca daemon on the central machine that runs
-                  Nagios.   Service check information is read from
-                  the standard input in tab-delimited format as
-		  follows:
+  2) send_nsca
+	This is the client program that is used to send service check information
+	from a remote machine to the nsca daemon on the central machine that runs
+	Icinga. Service check information is read from the standard input in
+	tab-delimited format as follows:
 
-			<host_name>[tab]<svc_description>[tab]<return_code>[tab]<plugin_output>[newline]
+		<host_name>[tab]<svc_description>[tab]<return_code>[tab]<plugin_output>[newline]
 
-	          where:
+	where:
+		<host_name>=short name of host that the service is associated with
+		<svc_description>=description of the service
+		<return_code>=numeric return code
+		<plugin_output>=output from service check
 
-			<host_name>=short name of host that the
-                                    service is associated with
-			<svc_description>=description of the service
-			<return_code>=numeric return code
-			<plugin_output>=output from service check
+	Host check information is submitted in a similiar fashion - just leave out
+	the service description:
 
-		  Host check information is submitted in a similiar
- 		  fashion - just leave out the service description:
-
-			<host_name>[tab]<return_code>[tab]<plugin_output>[newline]
+		<host_name>[tab]<return_code>[tab]<plugin_output>[newline]
 
 
 Compiling
 ---------
 
-The code is very basic and may not work on your particular
-system without some tweaking.  I just haven't put a lot of effort
-into this addon.  Most users should be able to compile
-the daemon and client piece with the following commands...
+Most users should be able to compile the daemon and client piece with the following
+commands...
 
 ./configure
 make all
@@ -84,13 +81,13 @@ Installing
 ----------
 
 The send_nsca program and associate config file (nsca.cfg) should
-be placed on remote machines that you want to have communicate 
+be placed on remote machines that you want to have communicate
 with the nsca daemon.  This means that you may have to compile the
 send_nsca program on the remote machine, if its not the same
 OS/architecture as that of the central server.
 
 The nsca daemon and the configuration file (nsca.cfg) should
-be placed somewhere on the central server running Nagios.
+be placed somewhere on the central server running Icinga.
 
 NOTES:  Make sure that you specify and use the same password in
         both the nsca.cfg and send_nsca.cfg files!  If you use a
@@ -168,7 +165,7 @@ of TCP wrappers, you need to do the following things:
 	service nsca
 	{
         	flags           = REUSE
-	        socket_type     = stream        
+	        socket_type     = stream
         	wait            = no
 	        user            = <user>
 		group		= <group>
@@ -210,10 +207,8 @@ Questions?
 ----------
 
 If you have questions about this addon, or problems getting things
-working, send an email to one of the Icinga mailing lists (see http://www.icinga.org/community).
+working, send an email to one of the Icinga mailing lists, visit the
+portal or get on IRC.
 
-	-- Ethan Galstad
-
-
-
+http://www.icinga.org/support
 

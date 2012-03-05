@@ -2,13 +2,13 @@
  *
  * UTILS.H - Header file for NSCA utility functions
  *
- * License: GPL
  * Copyright (c) 2000-2003 Ethan Galstad (nagios@nagios.org)
+ * Copyright (c) 2010-2012 Icinga Development Team and Community Contributors
+ *      (http://www.icinga.org)
  *
- * Last Modified: 10-15-2003
+ * License: GPL
  *
  * Description:
- *
  *
  * License Information:
  *
@@ -47,6 +47,7 @@ struct crypt_instance {
 #endif
         };
 
+char *escape_newlines(char *);
 void generate_crc32_table(void);
 unsigned long calculate_crc32(char *, int);
 

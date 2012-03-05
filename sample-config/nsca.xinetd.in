@@ -6,7 +6,7 @@ service nsca
         socket_type     = stream        
        	wait            = no
         user            = @nsca_user@
-	group		= @nsca_grp@
+	group		= @nsca_group@
        	server          = @bindir@/nsca
         server_args     = -c @sysconfdir@/nsca.cfg --inetd
        	log_on_failure  += USERID

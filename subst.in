@@ -21,13 +21,16 @@ while ($f = shift @ARGV) {
 
 	while (<IN>) {
 		s|\@nsca_user\@|@nsca_user@|g;
-		s|\@nsca_grp\@|@nsca_grp@|g;
+		s|\@nsca_group\@|@nsca_group@|g;
 		s|\@nsca_port\@|@nsca_port@|g;
+		s|\@pidfile\@|@pidfile@|g;
+                s|\@CHECKRESULTDIR\@|@CHECKRESULTDIR@|g;
 		s|\@log_facility\@|@log_facility@|g;
 		s|\@libexecdir\@|@libexecdir@|g; # put all --with-vars before directories
 		s|\@localstatedir\@|@localstatedir@|g;
 		s|\@sysconfdir\@|@sysconfdir@|g;
 		s|\@datadir\@|@datadir@|g;
+		s|\@datarootdir\@|@datarootdir@|g;
 		s|\@sbindir\@|@sbindir@|g;
 		s|\@bindir\@|@bindir@|g;
 		s|\$\{exec_prefix\}|@exec_prefix@|g; # must be next to last

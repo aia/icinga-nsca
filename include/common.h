@@ -2,7 +2,8 @@
  *
  * COMMON.H - NSCA Common Include File
  * Copyright (c) 1999-2003 Ethan Galstad (nagios@nagios.org)
- * Last Modified: 01-07-2003
+ * Copyright (c) 2010-2012 Icinga Development Team and Community Contributors
+ *      (http://www.icinga.org)
  *
  * License:
  *
@@ -42,16 +43,28 @@
 
 #define DEFAULT_SOCKET_TIMEOUT	10	/* timeout after 10 seconds */
 
-#define MAX_INPUT_BUFFER	2048	/* max size of most buffers we use */
+#define MAX_INPUT_BUFFER	5120	/* max size of most buffers we use */
+
+/*********************** LENGTHS **********************/
+
+/*
+ * WARNING!
+ * changing the lengths could cause packet failures
+ * between clients and servers among different versions!
+ */
 
 #define MAX_HOST_ADDRESS_LENGTH	256	/* max size of a host address */
 
 #define MAX_HOSTNAME_LENGTH	64
 #define MAX_DESCRIPTION_LENGTH	128
-#define MAX_PLUGINOUTPUT_LENGTH	512
+#define MAX_PLUGINOUTPUT_LENGTH	4096
+
+#define OLD_PLUGINOUTPUT_LENGTH	512
+#define OLD_PACKET_LENGTH 	(( sizeof( data_packet) - ( MAX_PLUGINOUTPUT_LENGTH - OLD_PLUGINOUTPUT_LENGTH)))
 
 #define MAX_PASSWORD_LENGTH     512
 
+#define BLOCK_DELIMITER  	"\x17"
 
 /********************* ENCRYPTION TYPES ****************/
 

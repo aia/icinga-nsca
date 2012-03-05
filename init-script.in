@@ -1,15 +1,34 @@
 #!/bin/sh
 #
-#  Last Modified 01-07-2003 Ethan Galstad (nagios@nagios.org)
-#  Notes
-#  This script takes care of starting and stopping the NSCA daemon.
-#  Modeled after init script for NRPE written by jaclu@grm.se
-#
 # chkconfig: 2345 80 30
-# description: nsca is a daemon for accepting service check results \
-#              from applications running on other hosts.
-# processname: nsca
-# config: /usr/local/icinga/etc/nsca.cfg
+# description: Icinga NSCA monitoring plugin
+### BEGIN INIT INFO
+# Provides: icinga-nsca
+# Required-Start: $local_fs $network
+# Required-Stop: $local_fs $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: start and stop Icinga NSCA daemon
+# Description: Icinga NSCA is a service monitoring daemon
+### END INIT INFO
+
+## definitions ##
+prefix=@prefix@
+NscaBin=@bindir@/nsca
+NscaCfgFile=@sysconfdir@/nsca.cfg
+NscaRunFile=@pidfile@
+NscaLockDir=/var/lock/subsys
+NscaLockFile=icinga-nrpe
+NscaUser=@nsca_user@
+NscaGroup=@nsca_group@
+
+# load extra environment variables
+if [ -f /etc/sysconfig/icinga-nsca ]; then
+        . /etc/sysconfig/icinga-nsca
+fi
+if [ -f /etc/default/icinga-nsca ]; then
+        . /etc/default/icinga-nsca
+fi
 
 # Source function library
 if [ -f /etc/rc.d/init.d/functions ]; then
@@ -20,45 +39,124 @@ elif [ -f /etc/rc.d/functions ]; then
 . /etc/rc.d/functions
 fi
 
+# Check that nsca exists.
+if [ ! -f $NscaBin ]; then
+    echo "Executable file $NscaBin not found.  Exiting."
+    exit 1
+fi
+
+# Check that nsca.cfg exists.
+if [ ! -f $NscaCfgFile ]; then
+    echo "Configuration file $NscaCfgFile not found.  Exiting."
+    exit 1
+fi
+
 # Source networking configuration.
-. /etc/sysconfig/network
+if [ -f /etc/sysconfig/network ]; then
+        . /etc/sysconfig/network
 
-# Check that networking is up.
-[ ${NETWORKING} = "no" ] && exit 0
+        # Check that networking is up.
+        if [ "${NETWORKING}" == "no" ]; then
+                exit 0
+        fi
+fi
 
-NscaBin=@bindir@/nsca
-NscaCfg=@sysconfdir@/nsca.cfg
-LockFile=/var/lock/subsys/nsca
+status_nsca ()
+{
+
+        if ps -p $NscaPID > /dev/null 2>&1; then
+                return 0
+        else
+                return 1
+        fi
+
+        return 1
+}
+
+
+printstatus_nsca()
+{
+
+        if status_nsca $1 $2; then
+                echo "icinga-nsca (pid $NrpePID) is running..."
+        else
+                echo "icinga-nsca is not running"
+        fi
+}
+
+
+killproc_nsca ()
+{
+        if kill -0  $NscaPID  >/dev/null 2>&1; then
+                kill $2 $NscaPID
+        fi
+}
+
+kill9proc_nsca()
+{
+        kill -9 $NscaPID
+}
+
+pid_nsca ()
+{
+
+        if test ! -f $NscaRunFile; then
+                echo "Icinga NSCA not running. No lock file found in $NscaRunFile"
+                exit 1
+        fi
+
+        NscaPID=`head -n 1 $NscaRunFile`
+}
+
+start(){
+        # Check if nsca is already running
+        $0 status > /dev/null
+        if [ $? -eq 0 ]; then
+                pid_nsca
+                # check if pid can be found running
+                if status_nsca > /dev/null; then
+                        echo "Icinga NSCA is already running. PID: $NscaPID"
+                                exit 1
+                        else
+                                echo "Icinga NSCA PID $NscaPID not running. Removing lockfile."
+                                rm -f $NscaRunFile $NscaLockDir/$NscaLockFile
+                fi
+        fi
+
+        printf "Starting icinga nsca: "
+        touch $NscaRunFile
+        chown $NscaUser:$NscaGroup $NscaRunFile
+        $NrpeBin -c $NscaCfgFile -d
+        if [ -d $NscaLockDir ]; then touch $NscaLockDir/$NscaLockFile; fi
+        echo "Starting icinga nsca done."
+        exit 0
+
+}
+
 
 # See how we were called.
 case "$1" in
-  start)
-	# Start daemons.
-	echo -n "Starting nsca: "
-	daemon $NscaBin -s -c $NscaCfg
-	RETVAL=$?
-	echo
-	touch $LockFile
-	;;
-  stop)
-	# Stop daemons.
-	echo -n "Shutting down nsca: "
-	killproc nsca
-	echo
-	rm -f $LockFile
-	;;
-  restart)
-	$0 stop
-	$0 start
-	;;
-  status)
-	status nsca
-	;;
-  *)
-	echo "Usage: nsca {start|stop|restart|status}"
-	exit 1
+        start)
+                start
+                ;;
+        stop)
+                printf "Stopping icinga nsca:"
+                pid_nsca
+                killproc_nsca nsca
+                echo 'Stopping icinga nsca done.'
+                rm -f $NscaRunFile $NscaLockFile
+        ;;
+        restart)
+                $0 stop
+                start
+                ;;
+        status)
+                pid_nsca
+                printstatus_nsca nsca
+        ;;
+        *)
+                echo "Usage: icinga-nsca {start|stop|restart|status}"
+                exit 1
 esac
 
 exit 0
-
-

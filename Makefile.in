@@ -1,7 +1,5 @@
 ###############################
 # Makefile for NSCA
-#
-# Last Modified: 10-15-2003
 ###############################
 
 
@@ -9,14 +7,33 @@
 SRC_BASE=./src/
 SRC_INCLUDE=./include/
 
-all:	
+CC=@CC@
+CFLAGS=@CFLAGS@ @DEFS@
+LDFLAGS=@LDFLAGS@ @LIBS@
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+CFGDIR=@sysconfdir@
+BINDIR=@bindir@
+SBINDIR=@sbindir@
+LIBEXECDIR=@libexecdir@
+INSTALL=@INSTALL@
+NAGIOS_INSTALL_OPTS=@NAGIOS_INSTALL_OPTS@
+NRPE_INSTALL_OPTS=@NRPE_INSTALL_OPTS@
+ssl_certs=certs
+
+INIT_DIR=@init_dir@
+INIT_OPTS=-o root -g root
+
+# make
+all:
 	cd $(SRC_BASE); $(MAKE) $@ ; cd ..
 
 	@echo ""
 	@echo "*** Compile finished ***"
 	@echo ""
-	@echo "If the compile finished without any errors, you should"
-	@echo "find client and server binaries in the src/ subdirectory."
+	@echo "If the compile finished without any errors, you can"
+	@echo "can continue with the installation or upgrade process."
 	@echo ""
 	@echo "Read the README file for more information on installing"
 	@echo "the binaries, creating configuration files, and using"
@@ -29,12 +46,48 @@ nsca:
 send_nsca:
 	cd $(SRC_BASE); $(MAKE) $@ ; cd ..
 
+
+# install
+install-client:
+	cd $(SRC_BASE) && $(MAKE) $@
+
+install-daemon:
+	cd $(SRC_BASE) && $(MAKE) $@
+
 install:
+	cd $(SRC_BASE) && $(MAKE) $@
+
+## xinetd
+install-xinetd:
+	$(INSTALL) -m 644 sample-config/nsca.xinetd /etc/xinetd.d/nsca
+
+## config
+install-config: install-daemon-config install-client-config
+
+install-client-config:
+	$(INSTALL) -m 775 $(NAGIOS_INSTALL_OPTS) -d $(DESTDIR)$(CFGDIR)
+	$(INSTALL) -m 644 $(NSCA_INSTALL_OPTS) sample-config/send_nsca.cfg $(DESTDIR)$(CFGDIR)
+
+install-daemon-config:
+	$(INSTALL) -m 775 $(NAGIOS_INSTALL_OPTS) -d $(DESTDIR)$(CFGDIR)
+	$(INSTALL) -m 644 $(NSCA_INSTALL_OPTS) sample-config/nsca.cfg $(DESTDIR)$(CFGDIR)
+
+## init
+install-init: install-daemoninit
+
+install-daemoninit:
+	$(INSTALL) -m 755 -d $(INIT_OPTS) $(DESTDIR)$(INIT_DIR)
+	$(INSTALL) -m 755 $(INIT_OPTS) init-script $(DESTDIR)$(INIT_DIR)/icinga-nsca
+
 	@echo ""
-	@echo "Read the README file for information on installing the"
-	@echo "client and server binaries."
+	@echo "*** Init script installed ***"
 	@echo ""
 
+## full
+fullinstall:
+	${MAKE} install install-init install-daemon-config install-client-config
+
+# clean
 clean:
 	cd $(SRC_BASE); $(MAKE) $@ ; cd ..
 	rm -f core
@@ -42,8 +95,9 @@ clean:
 
 distclean: clean
 	cd $(SRC_BASE); $(MAKE) $@ ; cd ..
-	rm -f conf.libmcrypttest config.log config.status config.cache init-script Makefile subst $(SRC_INCLUDE)config.h
+	rm -f conf.libmcrypttest config.log config.status config.cache init-script init-script.debian subst $(SRC_INCLUDE)config.h
 	rm -f sample-config/nsca.cfg sample-config/send_nsca.cfg sample-config/nsca.xinetd
+	rm -f Makefile
 
 devclean: distclean
 
