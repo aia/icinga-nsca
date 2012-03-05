@@ -9,6 +9,7 @@ ENHANCEMENTS
 * add config directive to submit directly to checkresults directory (Mike Lindsey) #2100
 	** --with-checkresult-dir=<path> for configure
 * Support multi-line check output with 4000 character limit (Mike Lindsey) #2100
+* allow older clients using smaller packet size to talk to newer servers #2288
 
 FIXES
 * allow packets arriving with a future time stamp (Daniel Wittenberg) #2101
