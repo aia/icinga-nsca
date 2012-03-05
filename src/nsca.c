@@ -343,6 +343,8 @@ static int read_config_file(char *filename) {
 	char *varname;
 	char *varvalue;
 	int line;
+	int checkresult_test_fd = -1;
+	char *checkresult_test = NULL;
 
 	/* open the config file for reading */
 	fp = fopen(filename, "r");
@@ -462,16 +464,15 @@ static int read_config_file(char *filename) {
 				return ERROR;
 			}
 			check_result_path = strdup(varvalue);
-			int checkresult_test_fd = -1;
-			char *checkresult_test = NULL;
 			asprintf(&checkresult_test, "%s/nsca.test.%i", check_result_path, getpid());
 			checkresult_test_fd = open(checkresult_test, O_WRONLY | O_CREAT, 0644);
-			/* FIXME free checkresult_test and close file descriptor */
 
 			if (checkresult_test_fd > 0) {
 				unlink(checkresult_test);
+				free(checkresult_test);
 			} else {
 				syslog(LOG_ERR, "check_result_path config variable found, but directory not writeable.\n");
+				free(checkresult_test);
 				return ERROR;
 			}
 		} else if (strstr(input_buffer, "append_to_file")) {
@@ -1219,7 +1220,6 @@ static int write_checkresult_file(char *host_name, char *svc_description, int re
 
 	/* create safe checkresult file */
 	asprintf(&checkresult_file, "%s/cXXXXXX", check_result_path);
-	/* FIXME free temp buffers */
 
 	checkresult_file_fd = mkstemp(checkresult_file);
 	if (checkresult_file_fd > 0) {
@@ -1260,6 +1260,10 @@ static int write_checkresult_file(char *host_name, char *svc_description, int re
 	fclose(checkresult_ok_file_fp);
 	/* reset umask */
 	umask(old_umask);
+
+	/* clear temp buffers */
+	free(checkresult_file);
+	free(checkresult_ok_file);
 
 	return OK;
 }
