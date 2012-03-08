@@ -78,7 +78,7 @@ printstatus_nsca()
 {
 
         if status_nsca $1 $2; then
-                echo "icinga-nsca (pid $NrpePID) is running..."
+                echo "icinga-nsca (pid $NscaPID) is running..."
         else
                 echo "icinga-nsca is not running"
         fi
@@ -126,7 +126,7 @@ start(){
         printf "Starting icinga nsca: "
         touch $NscaRunFile
         chown $NscaUser:$NscaGroup $NscaRunFile
-        $NrpeBin -c $NscaCfgFile -d
+        $NscaBin -c $NscaCfgFile -d
         if [ -d $NscaLockDir ]; then touch $NscaLockDir/$NscaLockFile; fi
         echo "Starting icinga nsca done."
         exit 0
