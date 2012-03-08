@@ -25,6 +25,7 @@ while ($f = shift @ARGV) {
 		s|\@nsca_port\@|@nsca_port@|g;
 		s|\@pidfile\@|@pidfile@|g;
                 s|\@CHECKRESULTDIR\@|@CHECKRESULTDIR@|g;
+		s|\@EXTCMDFILEDIR\@|@EXTCMDFILEDIR@|g;
 		s|\@log_facility\@|@log_facility@|g;
 		s|\@libexecdir\@|@libexecdir@|g; # put all --with-vars before directories
 		s|\@localstatedir\@|@localstatedir@|g;

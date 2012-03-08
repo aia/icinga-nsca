@@ -285,6 +285,13 @@ dnl User can override lock file location
 AC_ARG_WITH(pidfile,AC_HELP_STRING([--with-pid-file=<path>],[sets path and file name for pid file]),pidfile=$withval,pidfile=/var/run/icinga-nsca.pid)
 AC_SUBST(pidfile)
 
+dnl Location of the external command file path
+EXTCMDFILEDIR=no
+AC_ARG_WITH(ext-cmd-file-dir,AC_HELP_STRING([--with-ext-cmd-file-dir=<path>],[sets path to external command file directory of Icinga]),EXTCMDFILEDIR=$withval,EXTCMDFILEDIR=no)
+if test x$EXTCMDFILEDIR = xno; then
+	        EXTCMDFILEDIR="$localstatedir/rw"
+	fi
+AC_SUBST(EXTCMDFILEDIR)
 
 
 AC_PATH_PROG(PERL,perl)
@@ -306,15 +313,16 @@ echo ""
 echo " General Options:"
 echo " -------------------------"
 
-AC_MSG_RESULT([        NSCA port: $nsca_port])
-AC_MSG_RESULT([        NSCA user: $nsca_user])
-AC_MSG_RESULT([       NSCA group: $nsca_group])
-AC_MSG_RESULT([      Icinga user: $icinga_user])
-AC_MSG_RESULT([     Icinga group: $icinga_group])
-AC_MSG_RESULT([ Checkresult path: $CHECKRESULTDIR])
-AC_MSG_RESULT([        Init path: $init_dir])
-AC_MSG_RESULT([         pid file: $pidfile])
-AC_MSG_RESULT([     log facility: $log_facility])
+AC_MSG_RESULT([              NSCA port: $nsca_port])
+AC_MSG_RESULT([              NSCA user: $nsca_user])
+AC_MSG_RESULT([             NSCA group: $nsca_group])
+AC_MSG_RESULT([            Icinga user: $icinga_user])
+AC_MSG_RESULT([           Icinga group: $icinga_group])
+AC_MSG_RESULT([       Checkresult path: $CHECKRESULTDIR])
+AC_MSG_RESULT([ Ext Cmd file directory: $EXTCMDFILEDIR])
+AC_MSG_RESULT([              Init path: $init_dir])
+AC_MSG_RESULT([               pid file: $pidfile])
+AC_MSG_RESULT([           log facility: $log_facility])
 
 
 echo ""

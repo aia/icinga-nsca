@@ -89,23 +89,23 @@ debug=0
 
 
 # COMMAND FILE
-# This is the location of the Nagios command file that the daemon
+# This is the location of the Icinga command file that the daemon
 # should write all service check results that it receives.
 
-command_file=@localstatedir@/rw/icinga.cmd
+command_file=@EXTCMDFILEDIR@/icinga.cmd
 
 
 # ALTERNATE DUMP FILE
 # This is used to specify an alternate file the daemon should
 # write service check results to in the event the command file
 # does not exist.  It is important to note that the command file
-# is implemented as a named pipe and only exists when Nagios is
-# running.  You may want to modify the startup script for Nagios
+# is implemented as a named pipe and only exists when Icinga is
+# running.  You may want to modify the startup script for Icinga
 # to dump the contents of this file into the command file after
-# it starts Nagios.  Or you may simply choose to ignore any
-# check results received while Nagios was not running...
+# it starts Icinga.  Or you may simply choose to ignore any
+# check results received while Icinga was not running...
 
-alternate_dump_file=@localstatedir@/rw/nsca.dump
+alternate_dump_file=@EXTCMDFILEDIR@/nsca.dump
 
 
 
