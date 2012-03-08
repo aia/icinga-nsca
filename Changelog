@@ -14,6 +14,7 @@ ENHANCEMENTS
 
 FIXES
 * allow packets arriving with a future time stamp (Daniel Wittenberg) #2101
+* fix race condition when opening command file (Matej Vela) #2400
 
 CHANGES
 
