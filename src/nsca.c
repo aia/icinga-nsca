@@ -1316,6 +1316,7 @@ static int write_check_result(char *host_name, char *svc_description, int return
 /* opens the command file for writing */
 static int open_command_file(void) {
 	int fd;
+	int failures = 0;
 
 	/* file is already open */
 	if (command_file_fp != NULL && using_alternate_dump_file == FALSE)
@@ -1324,9 +1325,17 @@ static int open_command_file(void) {
 	/* open the command file for writing or appending (without using
 	 * O_CREAT like fopen() would)
 	 */
-	do {
-		fd=open(command_file,O_WRONLY|((append_to_file==TRUE)?O_APPEND:0));
-	} while (fd < 0 && errno == EINTR);
+	fd = open(command_file,O_WRONLY|O_NONBLOCK|((append_to_file==TRUE)?O_APPEND:0));
+	while (fd < 0 && failures < 300 && (errno == EINTR || errno == ENXIO)) {
+		failures += 1;
+		usleep(200000);
+		fd = open(command_file,O_WRONLY|O_NONBLOCK|((append_to_file==TRUE)?O_APPEND:0));
+	}
+	
+	if (failures > 300) {
+		syslog(LOG_ERR, "Too many failures trying to open Icinga pipe. Exiting."); 
+		exit(1);
+	}
 
 	/* command file doesn't exist - monitoring app probably isn't running... */
 	if (fd < 0 && errno == ENOENT){
