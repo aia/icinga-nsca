@@ -1274,6 +1274,8 @@ static int write_checkresult_file(char *host_name, char *svc_description, int re
 
 /* writes service/host check results to the Icinga command file */
 static int write_check_result(char *host_name, char *svc_description, int return_code, char *plugin_output, time_t check_time) {
+	char buffer[MAX_INPUT_BUFFER];
+	int res = 0;
 
 	if (debug == TRUE)
 		syslog(LOG_ERR, "Attempting to write to icinga command pipe");
@@ -1283,11 +1285,20 @@ static int write_check_result(char *host_name, char *svc_description, int return
 			return ERROR;
 	}
 
-	if (!strcmp(svc_description, ""))
-		fprintf(command_file_fp, "[%lu] PROCESS_HOST_CHECK_RESULT;%s;%d;%s\n", (unsigned long)check_time, host_name, return_code, plugin_output);
-	else
-		fprintf(command_file_fp, "[%lu] PROCESS_SERVICE_CHECK_RESULT;%s;%s;%d;%s\n", (unsigned long)check_time, host_name, svc_description, return_code, plugin_output);
+	if (!strcmp(svc_description, "")) {
+		sprintf(buffer, "[%lu] PROCESS_HOST_CHECK_RESULT;%s;%d;%s\n", (unsigned long)check_time, host_name, return_code, plugin_output);
+	}
+	else {
+	sprintf(buffer, "[%lu] PROCESS_SERVICE_CHECK_RESULT;%s;%s;%d;%s\n", (unsigned long)check_time, host_name, svc_description, return_code, plugin_output
+	} 
 
+	res = write(fileno(command_file_fp), buffer, strlen(buffer));
+	if (res == -1) {
+		syslog(LOG_ERR, "Write failed!");
+		close_command_file();
+		open_command_file();
+	}
+	
 	if (aggregate_writes == FALSE)
 		close_command_file();
 	else
