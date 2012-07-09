@@ -318,6 +318,7 @@ static void generate_transmitted_iv(char *transmitted_iv) {
 	/* try to get seed value from /dev/urandom, as its a better source of entropy */
 	fp = fopen("/dev/urandom", "r");
 	if (fp != NULL) {
+		setbuf(fp, NULL);
 		seed = fgetc(fp);
 		fclose(fp);
 	}
