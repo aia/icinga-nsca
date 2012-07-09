@@ -208,6 +208,8 @@ int main(int argc, char **argv) {
 			signal(SIGQUIT, sighandler);
 			signal(SIGTERM, sighandler);
 			signal(SIGHUP, sighandler);
+			
+			signal(SIGPIPE, SIG_IGN);
 
 			/* close standard file descriptors */
 			close(0);
