@@ -1289,7 +1289,7 @@ static int write_check_result(char *host_name, char *svc_description, int return
 		sprintf(buffer, "[%lu] PROCESS_HOST_CHECK_RESULT;%s;%d;%s\n", (unsigned long)check_time, host_name, return_code, plugin_output);
 	}
 	else {
-		sprintf(buffer, "[%lu] PROCESS_SERVICE_CHECK_RESULT;%s;%s;%d;%s\n", (unsigned long)check_time, host_name, svc_description, return_code, plugin_output
+		sprintf(buffer, "[%lu] PROCESS_SERVICE_CHECK_RESULT;%s;%s;%d;%s\n", (unsigned long)check_time, host_name, svc_description, return_code, plugin_output);
 	} 
 
 	res = write(fileno(command_file_fp), buffer, strlen(buffer));
